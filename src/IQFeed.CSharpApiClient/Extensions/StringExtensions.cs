@@ -66,5 +66,10 @@ namespace IQFeed.CSharpApiClient.Extensions
         {
             return s.Split(LineDelimiter, StringSplitOptions.RemoveEmptyEntries);
         }
+
+        public static string Invariant(FormattableString formattable)
+        {
+            return FormattableString.Invariant(formattable);
+        }
     }
 }

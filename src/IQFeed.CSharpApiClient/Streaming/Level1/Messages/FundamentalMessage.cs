@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using IQFeed.CSharpApiClient.Extensions;
+using static IQFeed.CSharpApiClient.Extensions.StringExtensions;
 
 // ReSharper disable InconsistentNaming
 
@@ -243,13 +244,7 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1.Messages
         
         public string ToCsv()
         {
-            return $"F,{Symbol},{ExchangeId},{PE.ToInvariantString()},{AverageVolume.ToInvariantString()},{FiftyTwoWeekHigh.ToInvariantString()},{FiftyTwoWeekLow.ToInvariantString()},{CalendarYearHigh.ToInvariantString()},{CalendarYearLow.ToInvariantString()},{DividendYield.ToInvariantString()}," +
-                   $"{DividendAmount.ToInvariantString()},{DividendRate.ToInvariantString()},{PayDate.ToInvariantString(FundamentalDateTimeFormat)},{ExDividendDate.ToInvariantString(FundamentalDateTimeFormat)},{string.Empty},{string.Empty},{string.Empty},{ShortInterest},{string.Empty}," +
-                   $"{CurrentYearEarningsPerShare.ToInvariantString()},{NextYearEarningsPerShare.ToInvariantString()},{FiveYearGrowthPercentage.ToInvariantString()},{FiscalYearEnd.ToInvariantString()},{string.Empty},{CompanyName},{RootOptionSymbol},{PercentHeldByInstitutions.ToInvariantString()}," +
-                   $"{Beta.ToInvariantString()},{Leaps},{CurrentAssets.ToInvariantString()},{CurrentLiabilities.ToInvariantString()},{BalanceSheetDate.ToInvariantString(FundamentalDateTimeFormat)},{LongTermDebt.ToInvariantString()},{CommonSharesOutstanding.ToInvariantString()}," +
-                   $"{string.Empty},{SplitFactor1},{SplitFactor2},{string.Empty},{string.Empty},{FormatCode},{Precision.ToInvariantString()},{SIC.ToInvariantString()},{HistoricalVolatility.ToInvariantString()},{SecurityType},{ListedMarket},{FiftyTwoWeekHighDate.ToInvariantString(FundamentalDateTimeFormat)}," +
-                   $"{FiftyTwoWeekLowDate.ToInvariantString(FundamentalDateTimeFormat)},{CalendarYearHighDate.ToInvariantString(FundamentalDateTimeFormat)},{CalendarYearLowDate.ToInvariantString(FundamentalDateTimeFormat)},{YearEndClose.ToInvariantString()},{MaturityDate.ToInvariantString(FundamentalDateTimeFormat)}," +
-                   $"{CouponRate.ToInvariantString()},{ExpirationDate.ToInvariantString(FundamentalDateTimeFormat)},{StrikePrice.ToInvariantString()},{NAICS.ToInvariantString()},{ExchangeRoot},{OptionsPremiumMultiplier.ToInvariantString()},{OptionsMultipleDeliverables.ToInvariantString()},";
+            return Invariant($"F,{Symbol},{ExchangeId},{PE},{AverageVolume},{FiftyTwoWeekHigh},{FiftyTwoWeekLow},{CalendarYearHigh},{CalendarYearLow},{DividendYield},{DividendAmount},{DividendRate},{PayDate.ToInvariantString(FundamentalDateTimeFormat)},{ExDividendDate.ToInvariantString(FundamentalDateTimeFormat)},{string.Empty},{string.Empty},{string.Empty},{ShortInterest},{string.Empty},{CurrentYearEarningsPerShare},{NextYearEarningsPerShare},{FiveYearGrowthPercentage},{FiscalYearEnd},{string.Empty},{CompanyName},{RootOptionSymbol},{PercentHeldByInstitutions},{Beta},{Leaps},{CurrentAssets},{CurrentLiabilities},{BalanceSheetDate.ToInvariantString(FundamentalDateTimeFormat)},{LongTermDebt},{CommonSharesOutstanding},{string.Empty},{SplitFactor1},{SplitFactor2},{string.Empty},{string.Empty},{FormatCode},{Precision},{SIC},{HistoricalVolatility},{SecurityType},{ListedMarket},{FiftyTwoWeekHighDate.ToInvariantString(FundamentalDateTimeFormat)},{FiftyTwoWeekLowDate.ToInvariantString(FundamentalDateTimeFormat)},{CalendarYearHighDate.ToInvariantString(FundamentalDateTimeFormat)},{CalendarYearLowDate.ToInvariantString(FundamentalDateTimeFormat)},{YearEndClose},{MaturityDate.ToInvariantString(FundamentalDateTimeFormat)},{CouponRate},{ExpirationDate.ToInvariantString(FundamentalDateTimeFormat)},{StrikePrice},{NAICS},{ExchangeRoot},{OptionsPremiumMultiplier},{OptionsMultipleDeliverables},");
         }
 
         public override bool Equals(object obj)
