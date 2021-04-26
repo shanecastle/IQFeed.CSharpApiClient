@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using IQFeed.CSharpApiClient.Lookup.Historical;
 using IQFeed.CSharpApiClient.Tests.Common;
 using NSubstitute;
 using NUnit.Framework;
@@ -94,6 +96,19 @@ namespace IQFeed.CSharpApiClient.Tests.Lookup.Common
             _parserFunc.DidNotReceive().Invoke(Arg.Any<string>());
         }
 
+        [Test]
+        public void Should_Return_Invalid_Data_Container_When_Tick_Overflow()
+        {
+            // Arrange
+            var message = $"2018-04-17 17:51:22.123456,96.0700,{long.MaxValue},0,0.0000,0.0000,4145784264,O,19,143A,";
+            var messagesBytes = TestHelper.GetMessageBytes(new List<string>{ message + IQFeedDefault.ProtocolTerminatingCharacters });
+
+            // Act
+            var container = _baseLookupMessageHandlerTestClass.ProcessMessages(HistoricalMessageHandler.TryParseTick, _errorParserFunc, messagesBytes, messagesBytes.Length);
+
+            // Assert
+            Assert.GreaterOrEqual(container.InvalidMessages.Count(), 1);
+        }
 
         private class NoErrorMessageTestDataSource : IEnumerable
         {
@@ -107,6 +122,7 @@ namespace IQFeed.CSharpApiClient.Tests.Lookup.Common
                 yield return new[] { "X,,", "!ENDMSG!," };
             }
         }
+
         [TestCaseSource(typeof(NoErrorMessageTestDataSource))]
         public void Should_Return_Empty_Error_Message_When_Parsing_Messages(string[] messages)
         {
@@ -141,8 +157,6 @@ namespace IQFeed.CSharpApiClient.Tests.Lookup.Common
             Assert.IsEmpty(errorMessage);
         }
 
-
-
         private class ErrorMessageTestDataSource : IEnumerable
         {
             public IEnumerator GetEnumerator()
@@ -162,7 +176,6 @@ namespace IQFeed.CSharpApiClient.Tests.Lookup.Common
             // Assert
             Assert.IsNotEmpty(errorMessage);
         }
-
 
         private class ErrorMessageWithRequestIdTestDataSource : IEnumerable
         {

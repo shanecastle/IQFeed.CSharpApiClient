@@ -18,7 +18,7 @@ namespace IQFeed.CSharpApiClient.Extensions.Lookup.Historical
             double open,
             double close,
             long totalVolume,
-            int periodVolume,
+            long periodVolume,
             int totalTrade,
             int periodTrade,
             double vwap)
@@ -41,7 +41,7 @@ namespace IQFeed.CSharpApiClient.Extensions.Lookup.Historical
         public double Open { get; set; }
         public double Close { get; set; }
         public long TotalVolume { get; set; }
-        public int PeriodVolume { get; set; }
+        public long PeriodVolume { get; set; }
         public int TotalTrade { get; set; }
         public int PeriodTrade { get; set; }
         public double VWAP { get; set; }
@@ -57,7 +57,7 @@ namespace IQFeed.CSharpApiClient.Extensions.Lookup.Historical
                 double.Parse(values[3], CultureInfo.InvariantCulture),
                 double.Parse(values[4], CultureInfo.InvariantCulture),
                 long.Parse(values[5], CultureInfo.InvariantCulture),
-                int.Parse(values[6], CultureInfo.InvariantCulture),
+                long.Parse(values[6], CultureInfo.InvariantCulture),
                 int.Parse(values[7], CultureInfo.InvariantCulture),
                 int.Parse(values[8], CultureInfo.InvariantCulture),
             double.Parse(values[9], CultureInfo.InvariantCulture));
@@ -70,7 +70,7 @@ namespace IQFeed.CSharpApiClient.Extensions.Lookup.Historical
 
         public string ToCsv()
         {
-            return FormattableString.Invariant($"{Timestamp.ToString(HistoricalBarDateTimeFormat, CultureInfo.InvariantCulture)},{High},{Low},{Open},{Close},{TotalVolume},{PeriodVolume},{TotalTrade},{PeriodTrade},{VWAP:F4}");
+            return FormattableString.Invariant($"{Timestamp.ToString(HistoricalBarDateTimeFormat, CultureInfo.InvariantCulture)},{High},{Low},{Open},{Close},{TotalVolume},{PeriodVolume},{TotalTrade},{PeriodTrade},{Math.Round(VWAP, 4)}");
         }
 
         public override string ToString()
@@ -110,7 +110,7 @@ namespace IQFeed.CSharpApiClient.Extensions.Lookup.Historical
                 hashCode = (hashCode * 397) ^ Open.GetHashCode();
                 hashCode = (hashCode * 397) ^ Close.GetHashCode();
                 hashCode = (hashCode * 397) ^ TotalVolume.GetHashCode();
-                hashCode = (hashCode * 397) ^ PeriodVolume;
+                hashCode = (hashCode * 397) ^ PeriodVolume.GetHashCode();
                 hashCode = (hashCode * 397) ^ TotalTrade;
                 hashCode = (hashCode * 397) ^ PeriodTrade;
                 hashCode = (hashCode * 397) ^ VWAP.GetHashCode();

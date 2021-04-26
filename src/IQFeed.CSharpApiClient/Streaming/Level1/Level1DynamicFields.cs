@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Text;
+using IQFeed.CSharpApiClient.Common;
 using IQFeed.CSharpApiClient.Extensions;
 using IQFeed.CSharpApiClient.Streaming.Level1.Messages;
 
@@ -53,8 +53,10 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
         public int MarketOpen { get; private set; }
         public string MessageContents { get; private set; }
         public double MostRecentTrade { get; private set; }
+        public int MostRecentTradeAggressor { get; private set; }
         public string MostRecentTradeConditions { get; private set; }
         public DateTime MostRecentTradeDate { get; private set; }
+        public int MostRecentTradeDayCode { get; private set; }
         public int MostRecentTradeMarketCenter { get; private set; }
         public int MostRecentTradeSize { get; private set; }
         public TimeSpan MostRecentTradeTime { get; private set; }
@@ -124,8 +126,10 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
             int marketOpen,
             string messageContents,
             double mostRecentTrade,
+            int mostRecentTradeAggressor,
             string mostRecentTradeConditions,
             DateTime mostRecentTradeDate,
+            int mostRecentTradeDayCode,
             int mostRecentTradeMarketCenter,
             int mostRecentTradeSize,
             TimeSpan mostRecentTradeTime,
@@ -194,8 +198,10 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
             MarketOpen = marketOpen;
             MessageContents = messageContents;
             MostRecentTrade = mostRecentTrade;
+            MostRecentTradeAggressor = mostRecentTradeAggressor;
             MostRecentTradeConditions = mostRecentTradeConditions;
             MostRecentTradeDate = mostRecentTradeDate;
+            MostRecentTradeDayCode = mostRecentTradeDayCode;
             MostRecentTradeMarketCenter = mostRecentTradeMarketCenter;
             MostRecentTradeSize = mostRecentTradeSize;
             MostRecentTradeTime = mostRecentTradeTime;
@@ -271,8 +277,10 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
             int marketOpen = default;
             string messageContents = default;
             double mostRecentTrade = default;
+            int mostRecentTradeAggressor = default;
             string mostRecentTradeConditions = default;
             DateTime mostRecentTradeDate = default;
+            int mostRecentTradeDayCode = default;
             int mostRecentTradeMarketCenter = default;
             int mostRecentTradeSize = default;
             TimeSpan mostRecentTradeTime = default;
@@ -295,11 +303,12 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
             int tick = default;
             int tickID = default;
             int totalVolume = default;
-            string type = default;
             double volatility = default;
             double vwap = default;
 
             #endregion
+
+            string type = values[0];
 
             for (var i = 0; i < fields.Length; i++)
             {
@@ -309,60 +318,58 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
                 switch (field)
                 {
                     case DynamicFieldset.SevenDayYield:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out sevenDayYield);
+                        sevenDayYield = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.Ask:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out ask);
+                        ask = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.AskChange:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out askChange);
+                        askChange = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.AskMarketCenter:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out askMarketCenter);
+                        askMarketCenter = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.AskSize:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out askSize);
+                        askSize = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.AskTime:
-                        DateTime.TryParseExact(value, UpdateMessageTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var askTimeValue);
-                        askTime = askTimeValue.TimeOfDay;
+                        askTime = FieldParser.ParseTime(value, UpdateMessageTimeFormat);
                         break;
                     case DynamicFieldset.AvailableRegions:
                         availableRegions = value;
                         break;
                     case DynamicFieldset.AverageMaturity:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out averageMaturity);
+                        averageMaturity = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.Bid:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out bid);
+                        bid = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.BidChange:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out bidChange);
+                        bidChange = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.BidMarketCenter:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out bidMarketCenter);
+                        bidMarketCenter = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.BidSize:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out bidSize);
+                        bidSize = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.BidTime:
-                        DateTime.TryParseExact(value, UpdateMessageTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var bidTimeValue);
-                        bidTime = bidTimeValue.TimeOfDay;
+                        bidTime = FieldParser.ParseTime(value, UpdateMessageTimeFormat);
                         break;
                     case DynamicFieldset.Change:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out change);
+                        change = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.ChangeFromOpen:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out changeFromOpen);
+                        changeFromOpen = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.Close:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out close);
+                        close = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.CloseRange1:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out closeRange1);
+                        closeRange1 = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.CloseRange2:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out closeRange2);
+                        closeRange2 = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.DaysToExpiration:
                         daysToExpiration = value;
@@ -371,32 +378,31 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
                         decimalPrecision = value;
                         break;
                     case DynamicFieldset.Delay:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out delay);
+                        delay = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.ExchangeID:
                         exchangeID = value;
                         break;
                     case DynamicFieldset.ExtendedTrade:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out extendedTrade);
+                        extendedTrade = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.ExtendedTradeDate:
-                        DateTime.TryParseExact(value, UpdateMessageDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out extendedTradeDate);
+                        extendedTradeDate = FieldParser.ParseDate(value, UpdateMessageDateFormat);
                         break;
                     case DynamicFieldset.ExtendedTradeMarketCenter:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out extendedTradeMarketCenter);
+                        extendedTradeMarketCenter = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.ExtendedTradeSize:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out extendedTradeSize);
+                        extendedTradeSize = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.ExtendedTradeTime:
-                        DateTime.TryParseExact(value, UpdateMessageTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var extendedTradeTimeValue);
-                        extendedTradeTime = extendedTradeTimeValue.TimeOfDay;
+                        extendedTradeTime = FieldParser.ParseTime(value, UpdateMessageTimeFormat);
                         break;
                     case DynamicFieldset.ExtendedTradingChange:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out extendedTradingChange);
+                        extendedTradingChange = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.ExtendedTradingDifference:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out extendedTradingDifference);
+                        extendedTradingDifference = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.FinancialStatusIndicator:
                         financialStatusIndicator = value;
@@ -405,120 +411,124 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
                         fractionDisplayCode = value;
                         break;
                     case DynamicFieldset.High:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out high);
+                        high = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.Last:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out last);
+                        last = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.LastDate:
-                        DateTime.TryParseExact(value, UpdateMessageDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out lastDate);
+                        lastDate = FieldParser.ParseDate(value, UpdateMessageDateFormat);
                         break;
                     case DynamicFieldset.LastMarketCenter:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out lastMarketCenter);
+                        lastMarketCenter = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.LastSize:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out lastSize);
+                        lastSize = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.LastTime:
-                        DateTime.TryParseExact(value, UpdateMessageTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var lastTimeValue);
-                        lastTime = lastTimeValue.TimeOfDay;
+                        lastTime = FieldParser.ParseTime(value, UpdateMessageTimeFormat);
                         break;
                     case DynamicFieldset.Low:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out low);
+                        low = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.MarketCapitalization:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out marketCapitalization);
+                        marketCapitalization = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.MarketOpen:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out marketOpen);
+                        marketOpen = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.MessageContents:
                         messageContents = value;
                         break;
                     case DynamicFieldset.MostRecentTrade:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out mostRecentTrade);
+                        mostRecentTrade = FieldParser.ParseDouble(value);
+                        break;
+                    case DynamicFieldset.MostRecentTradeAggressor:
+                        mostRecentTradeAggressor = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.MostRecentTradeConditions:
                         mostRecentTradeConditions = value;
                         break;
                     case DynamicFieldset.MostRecentTradeDate:
-                        DateTime.TryParseExact(value, UpdateMessageDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out mostRecentTradeDate);
+                        mostRecentTradeDate = FieldParser.ParseDate(value, UpdateMessageDateFormat);
+                        break;
+                    case DynamicFieldset.MostRecentTradeDayCode:
+                        mostRecentTradeDayCode = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.MostRecentTradeMarketCenter:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out mostRecentTradeMarketCenter);
+                        mostRecentTradeMarketCenter = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.MostRecentTradeSize:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out mostRecentTradeSize);
+                        mostRecentTradeSize = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.MostRecentTradeTime:
-                        DateTime.TryParseExact(value, UpdateMessageTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var mostRecentTradeTimeValue);
-                        mostRecentTradeTime = mostRecentTradeTimeValue.TimeOfDay;
+                        mostRecentTradeTime = FieldParser.ParseTime(value, UpdateMessageTimeFormat);
                         break;
                     case DynamicFieldset.NetAssetValue:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out netAssetValue);
+                        netAssetValue = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.NumberOfTradesToday:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out numberOfTradesToday);
+                        numberOfTradesToday = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.Open:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out open);
+                        open = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.OpenInterest:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out openInterest);
+                        openInterest = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.OpenRange1:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out openRange1);
+                        openRange1 = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.OpenRange2:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out openRange2);
+                        openRange2 = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.PercentChange:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out percentChange);
+                        percentChange = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.PercentOffAverageVolume:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out percentOffAverageVolume);
+                        percentOffAverageVolume = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.PreviousDayVolume:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out previousDayVolume);
+                        previousDayVolume = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.PriceEarningsRatio:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out priceEarningsRatio);
+                        priceEarningsRatio = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.Range:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out range);
+                        range = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.RestrictedCode:
                         restrictedCode = value;
                         break;
                     case DynamicFieldset.Settle:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out settle);
+                        settle = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.SettlementDate:
-                        DateTime.TryParseExact(value, UpdateMessageDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out settlementDate);
+                        settlementDate = FieldParser.ParseDate(value, UpdateMessageDateFormat);
                         break;
                     case DynamicFieldset.Spread:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out spread);
+                        spread = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.Symbol:
                         symbol = value;
                         break;
                     case DynamicFieldset.Tick:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out tick);
+                        tick = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.TickID:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out tickID);
+                        tickID = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.TotalVolume:
-                        int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out totalVolume);
+                        totalVolume = FieldParser.ParseInt(value);
                         break;
                     case DynamicFieldset.Type:
                         type = value;
                         break;
                     case DynamicFieldset.Volatility:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out volatility);
+                        volatility = FieldParser.ParseDouble(value);
                         break;
                     case DynamicFieldset.VWAP:
-                        double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out vwap);
+                        vwap = FieldParser.ParseDouble(value);
                         break;
                 }
             }
@@ -566,8 +576,10 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
                 marketOpen,
                 messageContents,
                 mostRecentTrade,
+                mostRecentTradeAggressor,
                 mostRecentTradeConditions,
                 mostRecentTradeDate,
+                mostRecentTradeDayCode,
                 mostRecentTradeMarketCenter,
                 mostRecentTradeSize,
                 mostRecentTradeTime,
@@ -640,8 +652,10 @@ namespace IQFeed.CSharpApiClient.Streaming.Level1
             sb.Append(MarketOpen == default ? "" : $", {nameof(MarketOpen)}: {MarketOpen}");
             sb.Append(MessageContents == default ? "" : $", {nameof(MessageContents)}: {MessageContents}");
             sb.Append(MostRecentTrade == default ? "" : $", {nameof(MostRecentTrade)}: {MostRecentTrade}");
+            sb.Append(MostRecentTradeAggressor == default ? "" : $", {nameof(MostRecentTradeAggressor)}: {MostRecentTradeAggressor}");
             sb.Append(MostRecentTradeConditions == default ? "" : $", {nameof(MostRecentTradeConditions)}: {MostRecentTradeConditions}");
             sb.Append(MostRecentTradeDate == default ? "" : $", {nameof(MostRecentTradeDate)}: {MostRecentTradeDate}");
+            sb.Append(MostRecentTradeDayCode == default ? "" : $", {nameof(MostRecentTradeDayCode)}: {MostRecentTradeDayCode}");
             sb.Append(MostRecentTradeMarketCenter == default ? "" : $", {nameof(MostRecentTradeMarketCenter)}: {MostRecentTradeMarketCenter}");
             sb.Append(MostRecentTradeSize == default ? "" : $", {nameof(MostRecentTradeSize)}: {MostRecentTradeSize}");
             sb.Append(MostRecentTradeTime == default ? "" : $", {nameof(MostRecentTradeTime)}: {MostRecentTradeTime}");

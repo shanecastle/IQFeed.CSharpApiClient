@@ -36,6 +36,13 @@ namespace IQFeed.CSharpApiClient.Extensions
             return null;
         }
 
+        public static TimeSpan? ToNullableTimeSpan(this string s, string format)
+        {
+            if (TimeSpan.TryParseExact(s, format, CultureInfo.InvariantCulture, TimeSpanStyles.None, out var d))
+                return d;
+            return null;
+        }
+
         public static string[] SplitFeedMessage(this string s)
         {
             return s.Split(IQFeedDefault.ProtocolDelimiterCharacter);
@@ -64,6 +71,16 @@ namespace IQFeed.CSharpApiClient.Extensions
         public static string[] SplitFeedLine(this string s)
         {
             return s.Split(LineDelimiter, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static int GetHashCodeOrDefault(this string s)
+        {
+            return s != null ? s.GetHashCode() : 0;
+        }
+
+        public static string OrNullString(this string s)
+        {
+            return s ?? "<NULL>";
         }
     }
 }

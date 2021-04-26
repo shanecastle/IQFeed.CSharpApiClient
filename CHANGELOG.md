@@ -1,3 +1,19 @@
+### IQFeed.CSharpApiClient 2.6.2 - April 03, 2021
+
+##### Issues Resolved
+* Fixed issue with LookupRateLimiter when > 8 clients on burst of requests
+* Fixed issue with TickMessages resampler with 'O'
+* Fixed issue with Dynamic Fields and Type field
+
+
+### IQFeed.CSharpApiClient 2.6.1 - March 06, 2021
+* Added TryParse on Lookup data to detect Invalid data coming from IQFeed
+
+
+### IQFeed.CSharpApiClient 2.6.0 - December 17, 2020
+* Added Lookup requests rate limiter required by [IQFeed](http://forums.iqfeed.net/index.cfm?page=topic&topicID=5832)
+
+
 ### IQFeed.CSharpApiClient 2.5.1 - August 1, 2020
 * Replaced Market Symbols and Expired Options cache strategies
 

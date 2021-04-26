@@ -10,11 +10,17 @@ namespace IQFeed.CSharpApiClient.Lookup.Common
     public abstract class BaseLookupFacade
     {
         private readonly LookupDispatcher _lookupDispatcher;
+        private readonly LookupRateLimiter _lookupRateLimiter;
         private readonly ExceptionFactory _exceptionFactory;
         private readonly TimeSpan _timeout;
 
-        protected BaseLookupFacade(LookupDispatcher lookupDispatcher, ExceptionFactory exceptionFactory, TimeSpan timeout)
+        protected BaseLookupFacade(
+            LookupDispatcher lookupDispatcher,
+            LookupRateLimiter lookupRateLimiter,
+            ExceptionFactory exceptionFactory,
+            TimeSpan timeout)
         {
+            _lookupRateLimiter = lookupRateLimiter;
             _lookupDispatcher = lookupDispatcher;
             _exceptionFactory = exceptionFactory;
             _timeout = timeout;
@@ -25,6 +31,7 @@ namespace IQFeed.CSharpApiClient.Lookup.Common
             var client = await _lookupDispatcher.TakeAsync();
 
             var messages = new List<T>();
+            var invalidMessages = new List<InvalidMessage<T>>();
             var ct = new CancellationTokenSource(_timeout);
             var res = new TaskCompletionSource<IEnumerable<T>>();
             ct.Token.Register(() => res.TrySetCanceled(), false);
@@ -33,6 +40,8 @@ namespace IQFeed.CSharpApiClient.Lookup.Common
             {
                 var container = messageHandler(args.Message, args.Count);
 
+                // exception must be throw at the very end when all messages have been received and parsed to avoid
+                // continuation in the next request since we don't use request id
                 if (container.ErrorMessage != null)
                 {
                     res.TrySetException(_exceptionFactory.CreateNew(request, container.ErrorMessage, container.MessageTrace));
@@ -40,12 +49,21 @@ namespace IQFeed.CSharpApiClient.Lookup.Common
                 }
 
                 messages.AddRange(container.Messages);
+                invalidMessages.AddRange(container.InvalidMessages);
 
-                if (container.End)
-                    res.TrySetResult(messages);
+                if (!container.End) return;
+
+                if (invalidMessages.Count > 0)
+                {
+                    res.TrySetException(_exceptionFactory.CreateNew(request, invalidMessages, messages));
+                    return;
+                }
+
+                res.TrySetResult(messages);
             }
 
             client.MessageReceived += SocketClientOnMessageReceived;
+            await _lookupRateLimiter.WaitAsync().ConfigureAwait(false);
             client.Send(request);
 
             await res.Task.ContinueWith(x =>

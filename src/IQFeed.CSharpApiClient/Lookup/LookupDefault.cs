@@ -18,5 +18,12 @@ namespace IQFeed.CSharpApiClient.Lookup
         /// IQFeed will return on the same line all matching symbols causing overflow
         /// </summary>
         public const int BufferSize = 32 * 1024;
+
+        /// <summary>
+        /// Default requests per second allowed by IQFeed
+        /// IQFeed can tolerate very short burst around 75 requests/second.
+        /// <see cref="LookupRateLimiter"/> and corresponding tests for more info.
+        /// </summary>
+        public const int RequestsPerSecond = 50;
     }
 }

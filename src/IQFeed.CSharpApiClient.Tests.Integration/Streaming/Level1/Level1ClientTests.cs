@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using IQFeed.CSharpApiClient.Common.Exceptions;
 using IQFeed.CSharpApiClient.Streaming.Level1;
+using IQFeed.CSharpApiClient.Streaming.Level1.Handlers;
 using NUnit.Framework;
 
 namespace IQFeed.CSharpApiClient.Tests.Integration.Streaming.Level1
@@ -7,6 +9,7 @@ namespace IQFeed.CSharpApiClient.Tests.Integration.Streaming.Level1
     public class Level1ClientTests
     {
         private const string Symbol = "AAPL";
+        private const string NotFoundSymbol = "NotFoundSymbol";
         private ILevel1Client _level1Client;
 
         public Level1ClientTests()
@@ -45,6 +48,21 @@ namespace IQFeed.CSharpApiClient.Tests.Integration.Streaming.Level1
 
             // Assert
             Assert.AreEqual(updateSummaryMessage.Symbol, Symbol);
+        }
+        
+        [Test]
+        public void Should_Throw_Exceptions_When_SymbolNotFound_FundamentalSnapshot()
+        {
+            // Assert
+            Assert.ThrowsAsync<SymbolNotFoundIQFeedException>(async () => await _level1Client.GetFundamentalSnapshotAsync(NotFoundSymbol));
+        }
+
+        [Test]
+        public void Should_Throw_Exceptions_When_SymbolNotFound_For_UpdateSummarySnapshot()
+        {
+            // Assert
+            Assert.ThrowsAsync<SymbolNotFoundIQFeedException>(async () => await _level1Client.GetUpdateSummarySnapshotAsync(NotFoundSymbol));
+
         }
     }
 }
